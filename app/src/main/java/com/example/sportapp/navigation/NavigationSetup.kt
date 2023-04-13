@@ -224,8 +224,7 @@ fun NavGraphBuilder.seanceGraph(
                 seanceId = entry.arguments?.getString("id") as String,
                 onNavToHomePage = {
                     navController.navigate(SeanceRoutes.Seance.name)
-                },
-                firestoreViewModel = firestoreViewModel,
+                }
             )
         }
     }

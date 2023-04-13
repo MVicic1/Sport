@@ -40,7 +40,7 @@ class FirestoreViewModel(
         }
     }
 
-    fun setEditFields(exercice: Exercices) {
+    fun setEditFields(exercice: Exercice) {
         performanceUiState = performanceUiState.copy(
             exercice = exercice.name,
             performance = exercice.performanceNumber
@@ -85,5 +85,5 @@ data class PerformanceUiState(
     val performance: Int = 0,
     val exerciceAddedStatus:Boolean = false,
     val updateExerciceStatus:Boolean = false,
-    val selectedExercice:Exercices? = null
+    val selectedExercice:Exercice? = null
 )

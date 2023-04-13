@@ -1,6 +1,6 @@
 package com.example.sportapp.firestore.seance
 
-import com.example.sportapp.firestore.Exercices
+import com.example.sportapp.firestore.Exercice
 
 
 data class Seances(
@@ -8,7 +8,7 @@ data class Seances(
     val name: String = "",
     val date: String = "",
     val seanceId: String = "",
-    val exercices: List<Exercices>
+    val exercices: List<Exercice>
 ) {
     constructor() : this("", "", "", "", emptyList())
 }

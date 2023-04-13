@@ -3,7 +3,6 @@ package com.example.sportapp.firestore
 import com.example.sportapp.firebase.util.Resource
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -27,7 +26,7 @@ class StorageRepository {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getUserExercices(
         userId: String,
-    ): Flow<Resource<List<Exercices>>> = callbackFlow {
+    ): Flow<Resource<List<Exercice>>> = callbackFlow {
         var snapshotStateListener:ListenerRegistration? = null
 
         try {
@@ -35,7 +34,7 @@ class StorageRepository {
                 .whereEqualTo("userId", userId)
                 .addSnapshotListener{ snapshot, e ->
                     val response = if(snapshot != null) {
-                        val exercices = snapshot.toObjects(Exercices::class.java)
+                        val exercices = snapshot.toObjects(Exercice::class.java)
                         Resource.Success(data = exercices)
                     } else {
                         Resource.Error("")
@@ -54,13 +53,13 @@ class StorageRepository {
     fun getExercices(
         exerciceId:String,
         onError:(Throwable?) -> Unit,
-        onSuccess: (Exercices?) -> Unit
+        onSuccess: (Exercice?) -> Unit
     ) {
         exercicesRef
             .document(exerciceId)
             .get()
             .addOnSuccessListener {
-                onSuccess.invoke(it?.toObject(Exercices::class.java))
+                onSuccess.invoke(it?.toObject(Exercice::class.java))
             }
             .addOnFailureListener { result ->
                 onError.invoke(result.cause)
@@ -75,7 +74,7 @@ class StorageRepository {
     ) {
 
         val exerciceId = exercicesRef.document("Exercices").id
-        val exercice = Exercices(name, performanceNumber, exerciceId)
+        val exercice = Exercice(name, performanceNumber, exerciceId)
 
         exercicesRef
             .document(exerciceId)

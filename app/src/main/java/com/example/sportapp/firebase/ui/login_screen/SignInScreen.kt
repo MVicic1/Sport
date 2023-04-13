@@ -49,6 +49,11 @@ fun SignInScreen(
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // L'utilisateur a été authentifié avec succès
+                    /**
+                     * ici tu devrais ajouter un state sur Firebase.auth
+                     * comme ça quand il change tu peux aller directement au home screen
+                     * sans avoir besoin d'appuyer de nouveau sur le boutton continue whitout signin
+                     */
                     val user = auth.currentUser
                 }
             }

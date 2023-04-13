@@ -2,7 +2,6 @@ package com.example.sportapp.firestore.seance
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,9 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.sportapp.firebase.ui.login_screen.SignInViewModel
 import com.example.sportapp.firebase.util.Resource
-import com.example.sportapp.firestore.Exercices
-import com.example.sportapp.firestore.FirestoreViewModel
-import com.example.sportapp.navigation.SeanceRoutes
+import com.example.sportapp.firestore.Exercice
 
 @Composable
 fun SeanceScreen (
@@ -36,7 +33,7 @@ fun SeanceScreen (
     navToLoginPage:() -> Unit,
 ) {
 
-    val seanceUiState = seanceScreenViewModel?.seanceUiState ?: SeancesUiState()
+    val seanceUiState = seanceScreenViewModel.seanceUiState
 
     var openDialog by remember {
         mutableStateOf(false)
@@ -110,7 +107,7 @@ fun SeanceScreen (
                                 },
                                 onSeanceClick = { onSeanceClick.invoke(seance.seanceId) },
                                 onClick =  { },
-                                exercices = Exercices()
+                                exercice = Exercice()
                             )
                         }
                     }
@@ -168,7 +165,7 @@ fun SeanceScreen (
 @Composable
 fun SeanceItem(
     seances: Seances,
-    exercices: Exercices,
+    exercice: Exercice,
     onLongClick:() -> Unit,
     onClick:() -> Unit,
     onSeanceClick: (id: String) -> Unit
@@ -204,14 +201,14 @@ fun SeanceItem(
                     )
                     Spacer(modifier = Modifier.size(4.dp))
                     Text(
-                        text = "Exercise : " + exercices.name,
+                        text = "Exercise : " + exercice.name,
                         style = MaterialTheme.typography.h6,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(4.dp)
                     )
                     Spacer(modifier = Modifier.size(4.dp))
                     Text(
-                        text = "Weight : " + exercices.performanceNumber,
+                        text = "Weight : " + exercice.performanceNumber,
                         style = MaterialTheme.typography.h6,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(4.dp)
@@ -243,7 +240,7 @@ fun SeanceItem(
 }
 
 @Composable
-fun ExerciceList(exercices: MutableList<Exercices>) {
+fun ExerciceList(exercices: MutableList<Exercice>) {
     Column {
         Text("Exercices")
         LazyColumn(modifier = Modifier.fillMaxWidth()) {

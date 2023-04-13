@@ -5,9 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.sportapp.firebase.util.Resource
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PerformanceViewModel(
@@ -44,6 +42,6 @@ class PerformanceViewModel(
 }
 
 data class ExerciceUiState(
-    val exerciseList: Resource<List<Exercices>> = Resource.Loading(),
+    val exerciseList: Resource<List<Exercice>> = Resource.Loading(),
     val exerciceDeletedStatus:Boolean = false
 )

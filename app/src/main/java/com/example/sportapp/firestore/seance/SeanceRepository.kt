@@ -1,8 +1,7 @@
 package com.example.sportapp.firestore.seance
 
 import com.example.sportapp.firebase.util.Resource
-import com.example.sportapp.firestore.Exercices
-import com.google.firebase.Timestamp
+import com.example.sportapp.firestore.Exercice
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -72,7 +71,7 @@ class SeanceRepository {
         userId:String = "",
         name:String = "",
         date: String = "",
-        exercices: List<Exercices>,
+        exercices: List<Exercice>,
         onComplete: (Boolean) -> Unit
     ) {
 
@@ -102,13 +101,13 @@ class SeanceRepository {
     fun updateSeance(
         name:String = "",
         seanceId: String,
-        exercices: Exercices,
+        exercice: Exercice,
         onResult:(Boolean) -> Unit
     ){
 
         val updateData = hashMapOf<String,Any>(
             "name" to name,
-            "exercices" to exercices
+            "exercices" to exercice
         )
 
         seanceRef.document(seanceId)

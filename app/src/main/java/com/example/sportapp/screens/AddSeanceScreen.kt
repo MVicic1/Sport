@@ -2,7 +2,6 @@ package com.example.sportapp.screens
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.widget.NumberPicker
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,37 +15,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.sportapp.firestore.Exercices
+import com.example.sportapp.firestore.Exercice
 import com.example.sportapp.firestore.FirestoreViewModel
-import com.example.sportapp.firestore.seance.SeanceUiState
 import com.example.sportapp.firestore.seance.SeanceViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * je l'ai bougé dans les screen parce que c'est ton archi courante
+ * mais voir l'archi proposée dans MainActivity
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun AddSeanceScreen(
-    seanceViewModel: SeanceViewModel?,
+    seanceViewModel: SeanceViewModel,
     seanceId: String,
     onNavToHomePage: () -> Unit,
-    firestoreViewModel : FirestoreViewModel?
 ) {
-
-    val exercices = remember { mutableStateListOf<Exercices>() }
-
-    val seanceUiState =
-        seanceViewModel?.seanceUiState ?: SeanceUiState(date = "", exercice = exercices)
-
-    val isFormsNotBlank = seanceUiState.seance.isNotBlank()
 
     val isSeanceIdNotBlank = seanceId.isNotBlank()
     val icon = if (isSeanceIdNotBlank) Icons.Default.Refresh
     else Icons.Default.Check
     LaunchedEffect(key1 = Unit) {
         if (isSeanceIdNotBlank) {
-            seanceViewModel?.getSeance(seanceId)
+            seanceViewModel.getSeance(seanceId)
         } else {
-            seanceViewModel?.resetState()
+            seanceViewModel.resetState()
         }
     }
 
@@ -54,60 +48,16 @@ fun AddSeanceScreen(
 
     val scaffoldState = rememberScaffoldState()
 
-    @Composable
-    fun ExerciceItem(exercice: Exercices, seanceViewModel: SeanceViewModel) {
-
-        Column(modifier = Modifier.fillMaxWidth()) {
-            OutlinedTextField(
-                value = firestoreViewModel?.performanceUiState!!.exercice,
-                onValueChange = {
-                    firestoreViewModel?.onExerciceChange(it)},
-                label = { Text(text = "Exercice") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            )
-
-            NumberPicker(
-                value = firestoreViewModel?.performanceUiState!!.performance,
-                onValueChange = { firestoreViewModel?.onPerformanceChange(it) })
-        }
-    }
-
-    @Composable
-    fun ExercicesList(exercices: MutableList<Exercices>) {
-        Column {
-            Text("Exercices")
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(exercices) { exercice ->
-                    ExerciceItem(exercice = exercice, seanceViewModel = SeanceViewModel())
-                }
-            }
-
-            Button(
-                onClick = { exercices.add(Exercices()) },
-                modifier = Modifier.padding(top = 8.dp)
-            ) {
-                Text("Ajouter un exercice")
-            }
-            Button(onClick = { firestoreViewModel?.addExercice() }) {
-                Text(text = "validate exercice")
-            }
-        }
-    }
-
-
-
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
                     if (isSeanceIdNotBlank) {
-                        seanceViewModel?.updateSeance(seanceId)
+                        seanceViewModel.updateSeance(seanceId)
                     } else {
-                        // seanceViewModel?.createSeance(name.value, date.value, exercices)
-                        seanceViewModel?.addSeance()
+                        // seanceViewModel.createSeance(name.value, date.value, exercices)
+                        seanceViewModel.addSeance()
                     }
                 },
                 contentColor = Color.White, backgroundColor = Color.Black
@@ -135,20 +85,20 @@ fun AddSeanceScreen(
         }) {
         Column() {
 
-            if (seanceUiState.seanceAddedStatus) {
+            if (seanceViewModel.seanceUiState.seanceAddedStatus) {
                 scope.launch {
                     scaffoldState.snackbarHostState
                         .showSnackbar("Added exercice")
-                    seanceViewModel?.resetSeanceAddedStatus()
+                    seanceViewModel.resetSeanceAddedStatus()
                     onNavToHomePage.invoke()
                 }
             }
 
-            if (seanceUiState.updateSeanceStatus) {
+            if (seanceViewModel.seanceUiState.updateSeanceStatus) {
                 scope.launch {
                     scaffoldState.snackbarHostState
                         .showSnackbar("Exercice updated")
-                    seanceViewModel?.resetSeanceAddedStatus()
+                    seanceViewModel.resetSeanceAddedStatus()
                     onNavToHomePage.invoke()
                 }
             }
@@ -156,29 +106,75 @@ fun AddSeanceScreen(
 
             Column(modifier = Modifier.padding(16.dp)) {
                 OutlinedTextField(
-                    value = seanceUiState.seance,
-                    onValueChange = { seanceViewModel?.onSeanceChange(it)},
+                    value = seanceViewModel.seanceUiState.seance,
+                    onValueChange = { seanceViewModel.onSeanceChange(it) },
                     label = { Text("Nom de la séance") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 OutlinedTextField(
-                    value = seanceUiState.date,
-                    onValueChange = { seanceViewModel?.onSeanceTimeChange(it) },
+                    value = seanceViewModel.seanceUiState.date,
+                    onValueChange = { seanceViewModel.onSeanceTimeChange(it) },
                     label = { Text("Date de la séance") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                ExercicesList(exercices = exercices)
+                ExercicesList(
+                    seanceViewModel = seanceViewModel,
+                )
             }
         }
     }
 }
 
+@Composable
+fun ExerciceItem(
+    exercice: Exercice,
+    seanceViewModel: SeanceViewModel
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = exercice.name,
+            onValueChange = {
+                seanceViewModel.onExerciceNameChange(exercice, it)
+            },
+            label = { Text(text = "Exercice") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        NumberPicker(
+            value = exercice.performanceNumber,
+            onValueChange = {
+                seanceViewModel.onExercicePerformanceNumberChange(exercice, it)
+            }
+        )
+    }
+}
 
 
 
+@Composable
+fun ExercicesList(
+    seanceViewModel: SeanceViewModel
+) {
+    Column {
+        Text("Exercices")
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            items(seanceViewModel.seanceUiState.exerciceList) { exercice ->
+                ExerciceItem(exercice, seanceViewModel)
+            }
+        }
 
+        Button(
+            onClick = { seanceViewModel.onAddExercice() },
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
+            Text("Ajouter un exercice")
+        }
+    }
+}
 
 @Composable
 fun NumberPicker(

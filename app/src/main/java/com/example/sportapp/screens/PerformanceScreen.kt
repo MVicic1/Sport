@@ -22,9 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.example.sportapp.firebase.ui.login_screen.SignInViewModel
 import com.example.sportapp.firebase.util.Resource
 import com.example.sportapp.firestore.ExerciceUiState
-import com.example.sportapp.firestore.Exercices
+import com.example.sportapp.firestore.Exercice
 import com.example.sportapp.firestore.PerformanceViewModel
-import com.example.sportapp.ui.theme.background
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -42,7 +41,7 @@ fun PerformanceScreen(
     var openDialog by remember {
         mutableStateOf(false)
     }
-    var selectedExercice: Exercices? by remember {
+    var selectedExercice: Exercice? by remember {
         mutableStateOf(null)
     }
 
@@ -103,7 +102,7 @@ fun PerformanceScreen(
                             exerciseUiState.exerciseList.data ?: emptyList()
                                 ) { exercise ->
                             ExerciseItem(
-                                exercices = exercise,
+                                exercice = exercise,
                                 onLongClick = {
                                     openDialog = true
                                     selectedExercice = exercise
@@ -165,7 +164,7 @@ fun PerformanceScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseItem(
-    exercices: Exercices,
+    exercice: Exercice,
     onLongClick:() -> Unit,
     onClick:() -> Unit
 ) {
@@ -181,14 +180,14 @@ fun ExerciseItem(
     ) {
         Column {
             Text(
-                text = "Exercice : " + exercices.name,
+                text = "Exercice : " + exercice.name,
                 style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
                 )
             Spacer(modifier = Modifier.size(4.dp))
             Text(
-                text = "Weight : " + exercices.performanceNumber.toString() + " kg",
+                text = "Weight : " + exercice.performanceNumber.toString() + " kg",
                 style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)

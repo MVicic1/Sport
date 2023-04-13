@@ -1,19 +1,19 @@
 package com.example.sportapp.firestore.seance
 
-import android.util.Log.e
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.sportapp.firestore.Exercices
+import com.example.sportapp.firestore.Exercice
 import com.google.firebase.auth.FirebaseUser
+import kotlin.random.Random
 
 
 class SeanceViewModel (
     private val repository: SeanceRepository = SeanceRepository()
 ): ViewModel() {
 
-    var seanceUiState by mutableStateOf(SeanceUiState(date = "", exercice = emptyList()))
+    var seanceUiState by mutableStateOf(SeanceUiState(date = "", exerciceList = mutableListOf()))
         private set
 
     private val hasUser:Boolean
@@ -26,12 +26,32 @@ class SeanceViewModel (
         seanceUiState = seanceUiState.copy(seance = seance)
     }
 
-    fun onExerciceChange(exercice: List<Exercices>){
-        seanceUiState = seanceUiState.copy(exercice = exercice)
+    fun onAddExercice(){
+        val exerciceList = seanceUiState.exerciceList
+        exerciceList.add(Exercice())
+        seanceUiState = seanceUiState.copy(exerciceList = exerciceList)
     }
 
     fun onSeanceTimeChange(date: String){
         seanceUiState = seanceUiState.copy(date = date)
+    }
+
+    fun onExerciceNameChange(exercice: Exercice, newName: String) {
+        val newExercice = exercice.copy(name = newName)
+        val index = seanceUiState.exerciceList.indexOf(exercice)
+        if (index != -1) {
+            seanceUiState.exerciceList[index] = newExercice
+            seanceUiState = seanceUiState.copy()
+        }
+    }
+
+    fun onExercicePerformanceNumberChange(exercice: Exercice, newNumber: Int) {
+        val newExercice = exercice.copy(performanceNumber = newNumber)
+        val index = seanceUiState.exerciceList.indexOf(exercice)
+        if (index != -1) {
+            seanceUiState.exerciceList[index] = newExercice
+            seanceUiState = seanceUiState.copy()
+        }
     }
 
 
@@ -41,7 +61,7 @@ class SeanceViewModel (
                 userId = user!!.uid,
                 name = seanceUiState.seance,
                 date = seanceUiState.date,
-                exercices = seanceUiState.exercice
+                exercices = seanceUiState.exerciceList
             ) {
                 seanceUiState = seanceUiState.copy(seanceAddedStatus = it)
             }
@@ -69,7 +89,7 @@ class SeanceViewModel (
         repository.updateSeance(
             name = seanceUiState.seance,
             seanceId = seanceId,
-            exercices = Exercices()
+            exercice = Exercice()
         ) {
             seanceUiState = seanceUiState.copy(updateSeanceStatus = it)
         }
@@ -82,7 +102,7 @@ class SeanceViewModel (
     }
 
     fun resetState(){
-        seanceUiState = SeanceUiState(date = "", exercice = emptyList())
+        seanceUiState = SeanceUiState(date = "", exerciceList = mutableListOf())
     }
 
 
@@ -111,11 +131,23 @@ class SeanceViewModel (
 data class SeanceUiState(
     val seance:String = "",
     val date: String = "",
-    val exercice: List<Exercices>,
+    /**
+     * en règle général pour que tu évites de t'embrouiller avec les "s"
+     * là ton object Exercices c'est un exercice au singulier donc il
+     * devrait s'appeler Exercice par contre la variable c'est une liste d'exos
+     * là t'as deux choix ou la variable s'apelles :
+     * - exercices : ce qui corrrespond à une liste d'exo
+     * - exerciceList : hyper explicite, j'ai une préférence pour la première moi
+     * mais ça pour le coup c'ets chacun ses gouts :)
+     */
+    val exerciceList: MutableList<Exercice>,
     val seanceAddedStatus:Boolean = false,
     val updateSeanceStatus:Boolean = false,
     val selectedSeance: Seances? = null
-)
+) {
+    override fun equals(other: Any?): Boolean = false
+    override fun hashCode(): Int = Random(Int.MAX_VALUE).nextInt()
+}
 
 
 

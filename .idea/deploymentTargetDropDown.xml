@@ -7,11 +7,11 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="$USER_HOME$/.android/avd/debug_fontmaker.avd" />
+            <value value="$USER_HOME$/.android/avd/Pixel_4_The_one_android_12.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-04-11T09:35:48.536350Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-04-13T19:35:27.061757Z" />
   </component>
 </project>

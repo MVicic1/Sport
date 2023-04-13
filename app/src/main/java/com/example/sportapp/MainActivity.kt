@@ -28,6 +28,35 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * remarques générales:
+ * ce serait plus simple si dans ton projet tu fesais un package par feature
+ * avec dans chaque package ton screen et tout ce qui te permet de le faire focntionner en back
+ * je te conseil une archi du genre :
+ *   -application
+ *      SportApplication qui aujourd'hui est (ApplicationFirebaseAuth)
+ *      -- di
+ *         App Module
+ *      -- ui
+ *          --theme
+ *              etc
+ *   -features
+ *      -- di
+ *         WhateverModule
+ *      -- data
+ *          -- models
+ *          WhateverRepository
+ *      -- interface-adapter
+ *          WhateverViewModel
+ *      -- ui
+ *          -- models
+ *              ViewState
+ *              MOdelUI (si différents des modèles de data
+ *          WhateverScreen
+ *
+ *   tu y veras plus clair dans ton code et ce sera plus facile de naviguer
+ *   d'une feature à une autre :)
+ */
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
