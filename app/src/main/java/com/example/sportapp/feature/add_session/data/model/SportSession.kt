@@ -7,6 +7,4 @@ data class SportSession(
     val name: String = "",
     val date: Timestamp,
     val exerciseList: List<Exercise>,
-) {
-
-}
+)

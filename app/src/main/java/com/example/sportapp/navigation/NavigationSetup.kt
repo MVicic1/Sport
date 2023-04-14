@@ -1,7 +1,5 @@
 package com.example.sportapp.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -11,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.sportapp.feature.add_session.adapteur.SportSessionViewModel
 import com.example.sportapp.feature.add_session.ui.AddSportSessionScreen
 import com.example.sportapp.firebase.ui.login_screen.SignInScreen
 import com.example.sportapp.firebase.ui.login_screen.SignInViewModel
@@ -45,12 +44,7 @@ enum class SeanceRoutes {
     AddSeance
 }
 
-enum class SportSeanceRoutes {
-    Home,
-}
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationSetup(
     navController: NavHostController = rememberNavController(),
@@ -58,12 +52,10 @@ fun NavigationSetup(
     signUpViewModel: SignUpViewModel,
     firestoreViewModel: FirestoreViewModel,
     performanceViewModel: PerformanceViewModel,
-    seanceViewModel: SeanceViewModel,
-    seanceScreenViewModel: SeanceScreenViewModel
 ) {
     NavHost(
         navController = navController,
-        startDestination = NestedRoutes.Main.name
+        startDestination = NestedRoutes.Login.name
     ) {
         authGraph(
             navController,
@@ -76,14 +68,6 @@ fun NavigationSetup(
             signInViewModel
         )
         seanceGraph(
-            navController,
-            signInViewModel,
-            seanceViewModel,
-            seanceScreenViewModel,
-            firestoreViewModel
-        )
-        sportSeanceGraph(
-
         )
     }
 
@@ -110,29 +94,29 @@ fun NavGraphBuilder.authGraph(
             },
                 viewModel = signInViewModel,
                 onNavToSignUpPage = {
-                navController.navigate(LoginRoutes.Signup.name) {
-                    launchSingleTop = true
-                    popUpTo(LoginRoutes.SignIn.name) {
-                        inclusive = true
+                    navController.navigate(LoginRoutes.Signup.name) {
+                        launchSingleTop = true
+                        popUpTo(LoginRoutes.SignIn.name) {
+                            inclusive = true
+                        }
                     }
-                }
-            },
-            onNavToSeancePage = {
-                navController.navigate(SeanceRoutes.Seance.name) {
-                    launchSingleTop = true
-                    popUpTo(SeanceRoutes.Seance.name) {
-                        inclusive = true
+                },
+                onNavToSeancePage = {
+                    navController.navigate(SeanceRoutes.Seance.name) {
+                        launchSingleTop = true
+                        popUpTo(SeanceRoutes.Seance.name) {
+                            inclusive = true
+                        }
                     }
-                }
-            })
+                })
         }
 
         composable(route = LoginRoutes.Signup.name) {
             SignUpScreen(
                 viewModel = signUpViewModel,
                 onNavToLoginPage = {
-                navController.navigate(LoginRoutes.SignIn.name)
-            })
+                    navController.navigate(LoginRoutes.SignIn.name)
+                })
 
         }
 
@@ -190,71 +174,17 @@ fun NavGraphBuilder.homeGraph(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.seanceGraph(
-    navController: NavHostController,
-    signInViewModel: SignInViewModel,
-    seanceViewModel: SeanceViewModel,
-    seanceScreenViewModel: SeanceScreenViewModel,
-    firestoreViewModel: FirestoreViewModel
-) {
+){
     navigation(
         startDestination = SeanceRoutes.Seance.name,
         route = NestedRoutes.Main.name,
-    ) {
-        composable(SeanceRoutes.Seance.name) {
-            SeanceScreen(
-                seanceScreenViewModel = seanceScreenViewModel,
-                signInViewModel = signInViewModel,
-                onSeanceClick = { seanceId ->
-                    navController.navigate(
-                        SeanceRoutes.AddSeance.name + "?id=$seanceId"
-                    ) {
-                        launchSingleTop = true
-                    }
-                },
-                navToAddSeancePage = {
-                    navController.navigate(SeanceRoutes.AddSeance.name)
-                },
-                navToLoginPage = {
-                    navController.navigate(LoginRoutes.SignIn.name)
-                }
-
+    ){
+        composable(SeanceRoutes.Seance.name){
+            AddSportSessionScreen(
+                viewModel = SportSessionViewModel()
             )
         }
 
-        composable(
-            route = SeanceRoutes.AddSeance.name + "?id={id}",
-            arguments = listOf(navArgument("id") {
-                type = NavType.StringType
-                defaultValue = ""
-            })
-        ) { entry ->
-
-            AddSeanceScreen(
-                seanceViewModel = seanceViewModel,
-                seanceId = entry.arguments?.getString("id") as String,
-                onNavToHomePage = {
-                    navController.navigate(SeanceRoutes.Seance.name)
-                },
-                firestoreViewModel = firestoreViewModel,
-            )
-        }
     }
-
-}
-    fun NavGraphBuilder.sportSeanceGraph(
-
-    ) {
-        navigation(
-            startDestination = SportSeanceRoutes.Home.name,
-            route = NestedRoutes.Main.name,
-        ) {
-            composable(SportSeanceRoutes.Home.name) {
-                AddSportSessionScreen()
-            }
-
-
-    }
-
 }

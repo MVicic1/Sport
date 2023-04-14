@@ -2,17 +2,11 @@ package com.example.sportapp.feature.add_session.data
 
 import com.example.sportapp.feature.add_session.data.model.Exercise
 import com.example.sportapp.feature.add_session.data.model.SportSession
-import com.example.sportapp.firebase.util.Resource
-import com.example.sportapp.firestore.Exercices
-import com.example.sportapp.firestore.seance.SEANCES_COLLECTION_REF
-import com.example.sportapp.firestore.seance.Seances
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -59,7 +53,6 @@ class SportSessionRepository {
         exercises: List<Exercise>,
         onComplete: (Boolean) -> Unit
     ) {
-
         val sportSessionID = sessionRef.document().id
         val sportSession = SportSession(userId, name, date, exercises)
 

@@ -1,12 +1,14 @@
 package com.example.sportapp
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.material.Scaffold
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -32,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -49,8 +52,6 @@ class MainActivity : ComponentActivity() {
                         signUpViewModel = signUpViewModel,
                         firestoreViewModel = firestoreViewModel,
                         performanceViewModel = performanceViewModel,
-                        seanceViewModel = seanceViewModel,
-                        seanceScreenViewModel = seanceScreenViewModel
                     ) }
         }
     }

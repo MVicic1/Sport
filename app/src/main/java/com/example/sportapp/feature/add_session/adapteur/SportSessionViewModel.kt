@@ -24,45 +24,25 @@ class SportSessionViewModel(
     private val mutableState = MutableStateFlow<AddSportSessionState>(AddSportSessionState.Loading)
     val state = mutableState.asStateFlow()
 
-    var sportSessionUiState by mutableStateOf(SportSessionUiState(sportSeanceExercises = emptyList(), sportSeanceDate = Timestamp.now()))
-        private set
 
-    private val hasUser: Boolean
-        get() = repository.hasUser()
+    fun addSportSession(
+        name: String,
+        date: Timestamp,
+        exercises: List<Exercise>
+    ) {
+        val userId = repository.getUserId()
 
-    private val user: FirebaseUser?
-        get() = repository.user()
-
-    init {
         viewModelScope.launch {
-            delay(2_000)
-            val sportSessions = listOf(
-                SportSession("", "",  Timestamp.now(), emptyList())
-            )
-            mutableState.value = AddSportSessionState.Success
-        }
-    }
+            mutableState.value = AddSportSessionState.Loading
 
-    fun addSeance(){
-        if(hasUser){
-            repository.addSportSession(
-                userId = user!!.uid,
-                name = sportSessionUiState.sportSeanceName,
-                date = sportSessionUiState.sportSeanceDate,
-                exercises = sportSessionUiState.sportSeanceExercises,
-                ) {
-                sportSessionUiState = sportSessionUiState.copy(sportSeanceAddedStatus = it)
+            repository.addSportSession(userId, name, date, exercises) { isSuccess ->
+                if (isSuccess) {
+                    mutableState.value = AddSportSessionState.Success
+                } else {
+                    mutableState.value = AddSportSessionState.Error
+                }
             }
         }
     }
+
 }
-
-
-data class SportSessionUiState(
-    val sportSeanceName:String = "Test",
-    val sportSeanceDate: Timestamp,
-    val sportSeanceExercises: List<Exercise>,
-    val sportSeanceAddedStatus:Boolean = false,
-    val updateSportSeanceStatus:Boolean = false,
-    val selectedSportSeance: Seances? = null
-)
