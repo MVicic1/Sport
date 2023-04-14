@@ -15,7 +15,7 @@ class SportSessionViewModel(
     private val repository: SportSessionRepository = SportSessionRepository()
 ) : ViewModel() {
 
-    private val mutableState = MutableStateFlow<AddSportSessionState>(AddSportSessionState.Idle)
+    private val mutableState = MutableStateFlow<AddSportSessionState>(AddSportSessionState.Loading)
     val state = mutableState.asStateFlow()
 
     fun addSportSession(

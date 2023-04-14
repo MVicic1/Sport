@@ -32,6 +32,8 @@ fun AddSeanceScreen(
     firestoreViewModel : FirestoreViewModel?
 ) {
 
+
+
     val exercices = remember { mutableStateListOf<Exercices>() }
 
     val seanceUiState =
