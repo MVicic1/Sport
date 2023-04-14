@@ -1,18 +1,12 @@
 package com.example.sportapp.feature.add_session.adapteur
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sportapp.feature.add_session.data.SportSessionRepository
 import com.example.sportapp.feature.add_session.data.model.Exercise
-import com.example.sportapp.feature.add_session.data.model.SportSession
 import com.example.sportapp.feature.add_session.ui.model.AddSportSessionState
-import com.example.sportapp.firestore.seance.Seances
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -21,9 +15,8 @@ class SportSessionViewModel(
     private val repository: SportSessionRepository = SportSessionRepository()
 ) : ViewModel() {
 
-    private val mutableState = MutableStateFlow<AddSportSessionState>(AddSportSessionState.Loading)
+    private val mutableState = MutableStateFlow<AddSportSessionState>(AddSportSessionState.Idle)
     val state = mutableState.asStateFlow()
-
 
     fun addSportSession(
         name: String,
@@ -44,5 +37,4 @@ class SportSessionViewModel(
             }
         }
     }
-
 }

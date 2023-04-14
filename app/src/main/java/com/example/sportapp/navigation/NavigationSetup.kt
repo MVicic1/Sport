@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.sportapp.feature.add_session.adapteur.SportSessionViewModel
 import com.example.sportapp.feature.add_session.ui.AddSportSessionScreen
+import com.example.sportapp.feature.add_session.ui.model.AddSportSessionState
 import com.example.sportapp.firebase.ui.login_screen.SignInScreen
 import com.example.sportapp.firebase.ui.login_screen.SignInViewModel
 import com.example.sportapp.firebase.ui.signup_screen.SignUpScreen
@@ -182,7 +183,7 @@ fun NavGraphBuilder.seanceGraph(
     ){
         composable(SeanceRoutes.Seance.name){
             AddSportSessionScreen(
-                viewModel = SportSessionViewModel()
+                viewModel = SportSessionViewModel(),
             )
         }
 
