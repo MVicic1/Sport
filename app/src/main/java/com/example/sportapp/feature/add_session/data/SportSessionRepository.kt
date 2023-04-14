@@ -54,19 +54,18 @@ class SportSessionRepository {
 
     fun addSportSession(
         userId:String,
-        sessionId: String,
         name:String,
         date: Timestamp,
         exercises: List<Exercise>,
         onComplete: (Boolean) -> Unit
     ) {
 
-        val seanceId = sessionRef.document().id
-        val seance = SportSession(userId, sessionId, name, date, exercises)
+        val sportSessionID = sessionRef.document().id
+        val sportSession = SportSession(userId, name, date, exercises)
 
         sessionRef
-            .document(seanceId)
-            .set(seance)
+            .document(sportSessionID)
+            .set(sportSession)
             .addOnCompleteListener { result ->
                 onComplete.invoke(result.isSuccessful)
             }

@@ -18,13 +18,11 @@ import com.example.sportapp.firestore.seance.SeanceRepository
 import com.google.firebase.Timestamp
 
 @Composable
-fun AddSportSessionScreen(
-    viewModel: SportSessionViewModel
-) {
+fun AddSportSessionScreen() {
     val viewModel = remember { SportSessionViewModel() }
     Content(viewModel.state.collectAsState().value)
 
-    Button(onClick = ) {
+    Button(onClick = { viewModel.addSeance() }) {
 
     }
 

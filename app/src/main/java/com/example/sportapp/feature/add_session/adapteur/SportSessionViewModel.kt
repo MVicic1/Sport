@@ -1,12 +1,14 @@
 package com.example.sportapp.feature.add_session.adapteur
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sportapp.feature.add_session.data.SportSessionRepository
+import com.example.sportapp.feature.add_session.data.model.Exercise
 import com.example.sportapp.feature.add_session.data.model.SportSession
 import com.example.sportapp.feature.add_session.ui.model.AddSportSessionState
-import com.example.sportapp.firestore.Exercices
-import com.example.sportapp.firestore.seance.SeanceRepository
 import com.example.sportapp.firestore.seance.Seances
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
@@ -22,6 +24,9 @@ class SportSessionViewModel(
     private val mutableState = MutableStateFlow<AddSportSessionState>(AddSportSessionState.Loading)
     val state = mutableState.asStateFlow()
 
+    var sportSessionUiState by mutableStateOf(SportSessionUiState(sportSeanceExercises = emptyList(), sportSeanceDate = Timestamp.now()))
+        private set
+
     private val hasUser: Boolean
         get() = repository.hasUser()
 
@@ -32,19 +37,31 @@ class SportSessionViewModel(
         viewModelScope.launch {
             delay(2_000)
             val sportSessions = listOf(
-                SportSession("", "", "", Timestamp.now(), emptyList())
+                SportSession("", "",  Timestamp.now(), emptyList())
             )
             mutableState.value = AddSportSessionState.Success
         }
     }
 
+    fun addSeance(){
+        if(hasUser){
+            repository.addSportSession(
+                userId = user!!.uid,
+                name = sportSessionUiState.sportSeanceName,
+                date = sportSessionUiState.sportSeanceDate,
+                exercises = sportSessionUiState.sportSeanceExercises,
+                ) {
+                sportSessionUiState = sportSessionUiState.copy(sportSeanceAddedStatus = it)
+            }
+        }
+    }
 }
 
 
 data class SportSessionUiState(
-    val sportSeance:String = "",
-    val sportSeanceDate: String = "",
-    val sportSeanceExercices: List<Exercices>,
+    val sportSeanceName:String = "Test",
+    val sportSeanceDate: Timestamp,
+    val sportSeanceExercises: List<Exercise>,
     val sportSeanceAddedStatus:Boolean = false,
     val updateSportSeanceStatus:Boolean = false,
     val selectedSportSeance: Seances? = null

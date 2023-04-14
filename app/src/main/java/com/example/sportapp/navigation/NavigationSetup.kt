@@ -1,5 +1,7 @@
 package com.example.sportapp.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -9,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.sportapp.feature.add_session.ui.AddSportSessionScreen
 import com.example.sportapp.firebase.ui.login_screen.SignInScreen
 import com.example.sportapp.firebase.ui.login_screen.SignInViewModel
 import com.example.sportapp.firebase.ui.signup_screen.SignUpScreen
@@ -42,7 +45,12 @@ enum class SeanceRoutes {
     AddSeance
 }
 
+enum class SportSeanceRoutes {
+    Home,
+}
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationSetup(
     navController: NavHostController = rememberNavController(),
@@ -73,6 +81,9 @@ fun NavigationSetup(
             seanceViewModel,
             seanceScreenViewModel,
             firestoreViewModel
+        )
+        sportSeanceGraph(
+
         )
     }
 
@@ -179,25 +190,26 @@ fun NavGraphBuilder.homeGraph(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.seanceGraph(
     navController: NavHostController,
     signInViewModel: SignInViewModel,
     seanceViewModel: SeanceViewModel,
     seanceScreenViewModel: SeanceScreenViewModel,
     firestoreViewModel: FirestoreViewModel
-){
+) {
     navigation(
         startDestination = SeanceRoutes.Seance.name,
         route = NestedRoutes.Main.name,
-    ){
-        composable(SeanceRoutes.Seance.name){
+    ) {
+        composable(SeanceRoutes.Seance.name) {
             SeanceScreen(
                 seanceScreenViewModel = seanceScreenViewModel,
                 signInViewModel = signInViewModel,
                 onSeanceClick = { seanceId ->
                     navController.navigate(
                         SeanceRoutes.AddSeance.name + "?id=$seanceId"
-                    ){
+                    ) {
                         launchSingleTop = true
                     }
                 },
@@ -213,11 +225,11 @@ fun NavGraphBuilder.seanceGraph(
 
         composable(
             route = SeanceRoutes.AddSeance.name + "?id={id}",
-            arguments = listOf(navArgument("id"){
+            arguments = listOf(navArgument("id") {
                 type = NavType.StringType
                 defaultValue = ""
             })
-        ){ entry ->
+        ) { entry ->
 
             AddSeanceScreen(
                 seanceViewModel = seanceViewModel,
@@ -229,4 +241,20 @@ fun NavGraphBuilder.seanceGraph(
             )
         }
     }
+
+}
+    fun NavGraphBuilder.sportSeanceGraph(
+
+    ) {
+        navigation(
+            startDestination = SportSeanceRoutes.Home.name,
+            route = NestedRoutes.Main.name,
+        ) {
+            composable(SportSeanceRoutes.Home.name) {
+                AddSportSessionScreen()
+            }
+
+
+    }
+
 }
